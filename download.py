@@ -26,18 +26,20 @@ from bs4 import BeautifulSoup
 # e.g. https://my-subs.co/versions-629-0-1-game-of-thrones-subtitles
 BASE_URL = "https://my-subs.co"
 # You should visit their website and check following parts of URL
-# URL_EXTRA = "versions-629" # for GOT
-URL_EXTRA = "versions-2093"  # for BBT
-# POSTFIX = "game-of-thrones-subtitles"
-POSTFIX = "big-bang-theory-subtitles"
 
-SEASONS = list(range(2, 13))  # Season list for downloading
-EPISODES = list(range(1, 25))  # List of episodes to download, usually give
+# GOT : 629, BBT: 2093, BB: 2574
+URL_EXTRA = "versions-2574"
+
+# POSTFIX = "game-of-thrones-subtitles"
+POSTFIX = "breaking-bad-subtitles"
+
+SEASONS = list(range(1, 6))  # Season list for downloading
+EPISODES = list(range(1, 18))  # List of episodes to download, usually give
 # highest number of episodes from any season. Unknown episodes will be ignored
 
 # This will be used as a prefix for all downloaded files
-NAME = "The.Big.Bang.Theory"
-FOLDER = "data"  # Where you want to put downloaded files
+NAME = "Breaking.Bad"
+FOLDER = "data/bb"  # Where you want to put downloaded files
 
 pathlib.Path(FOLDER).mkdir(parents=True, exist_ok=True)
 
