@@ -1,3 +1,8 @@
 .idea/*
 data/*
 *.pyc
+jsmodel/*
+training_checkpoints/*
+model.h5
+model.png
+loss.png
