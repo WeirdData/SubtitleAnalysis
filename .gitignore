@@ -6,3 +6,4 @@ training_checkpoints/*
 model.h5
 model.png
 loss.png
+ids.json

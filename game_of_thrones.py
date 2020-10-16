@@ -8,24 +8,28 @@ import os
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
-from SecretColors import Palette
-from nltk.tokenize import WordPunctTokenizer
-from tensorflow.keras import layers, Sequential
 import tensorflowjs as tfjs
+import json
+from SecretColors import Palette
+from nltk.tokenize import NLTKWordTokenizer
+from tensorflow.keras import layers, Sequential
+
 from common import get_text
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 palette = Palette()
 
-WP_TOK = WordPunctTokenizer()
-BATCH_SIZE = 100
-TEMPERATURE = 0.4
-SEQ_LENGTH = 15
+WP_TOK = NLTKWordTokenizer()
+BATCH_SIZE = 50
+TEMPERATURE = 0.6
+SEQ_LENGTH = 6
 CHECKPOINT_DIR = './training_checkpoints'
+JS_DIR = "./jsmodel"
+ID_FILE = "ids.json"
 
 
 def get_data():
-    text = get_text("data/got")
+    text = get_text("data/got", 1)
     return text
 
 
@@ -34,10 +38,11 @@ def get_model(no_of_words, batch_size) -> keras.Model:
         [
             layers.Embedding(no_of_words, 500,
                              batch_input_shape=[batch_size, None]),
-            layers.LSTM(100,
+            layers.LSTM(50,
                         return_sequences=True,
                         recurrent_initializer="glorot_uniform",
                         stateful=True),
+            layers.LSTM(50, return_sequences=True),
             layers.Dense(no_of_words)
         ]
     )
@@ -65,24 +70,22 @@ def train_model():
               verbose=1,
               callbacks=[checkpoint_callback])
 
-    model.save("model.h5")
-    tfjs.converters.save_keras_model(model, "./jsmodel")
-
 
 def test_model(input_words):
+    input_words = [x.lower() for x in input_words]
     final_string = [x for x in input_words]
-    data = WP_TOK.tokenize(get_data())
-    vocab = sorted(set(data))
-    char2idx = {x: i for i, x in enumerate(vocab)}
+    with open(ID_FILE) as f:
+        char2idx = json.load(f)
     idx2char = {char2idx[v]: v for v in char2idx}
 
     input_words = [char2idx[x] for x in input_words]
     input_words = tf.expand_dims(input_words, axis=0)
 
-    model = get_model(len(vocab), 1)
+    model = get_model(len(char2idx), 1)
     model.load_weights(tf.train.latest_checkpoint(CHECKPOINT_DIR))
     model.build(tf.TensorShape([1, None]))
 
+    tfjs.converters.save_keras_model(model, JS_DIR)
     model.reset_states()
     for _ in range(25):
         prediction = model.predict(input_words)
@@ -111,26 +114,22 @@ def get_dataset():
         """
         return chunk[:-1], chunk[1:]
 
-    data = WP_TOK.tokenize(get_data())
+    data = WP_TOK.tokenize(get_data().lower())
     vocab = sorted(set(data))
     char2idx = {x: i for i, x in enumerate(vocab)}
     labeled_txt = np.array([char2idx[x] for x in data])
     data = tf.data.Dataset.from_tensor_slices(labeled_txt)
     sequences = data.batch(SEQ_LENGTH + 1, drop_remainder=True)
     data = sequences.map(_simple_shift)
-    data = data.shuffle(10000).batch(BATCH_SIZE, drop_remainder=True)
+    data = data.batch(BATCH_SIZE, drop_remainder=True)
+    with open(ID_FILE, "w") as f:
+        json.dump(char2idx, f, sort_keys=True)
     return len(vocab), data
 
 
 def run():
-    import json
-    # train_model()
+    train_model()
     # prediction = test_model(["Kings", "Landing"])
     # print(prediction)
-
-    data = WP_TOK.tokenize(get_data())
-    vocab = sorted(set(data))
-    char2idx = {x: i for i, x in enumerate(vocab)}
-
-    with open("ids.json", "w") as f:
-        json.dump(char2idx, f, sort_keys=True)
+    # test = "I am Here.\n who's there? ahh!"
+    # print(WP_TOK.tokenize(test))
