@@ -6,6 +6,6 @@
 # download subtitles if you want.
 
 
-from game_of_thrones import run
+from text_generator import run
 
 run()
