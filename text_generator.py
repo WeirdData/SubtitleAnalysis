@@ -21,7 +21,7 @@ FILE_LOG = "log.csv"
 FILE_MODEL = "model.h5"
 FILE_TXT = "../input/subtitles/subtext_got.txt"
 SEQ_LENGTH = 7
-TEMPERATURE = 0.7
+TEMPERATURE = 0.5
 BATCH_SIZE = 100
 
 
@@ -72,8 +72,10 @@ def train_model():
     model.compile(optimizer=keras.optimizers.Adam(),
                   loss=keras.losses.CategoricalCrossentropy(),
                   metrics=keras.metrics.Accuracy())
-
-    os.remove(FILE_LOG)
+    try:
+        os.remove(FILE_LOG)
+    except FileNotFoundError:
+        pass
     csv_logger = keras.callbacks.CSVLogger(FILE_LOG,
                                            append=True,
                                            separator=';')
@@ -112,4 +114,4 @@ def predict_text(words, no_of_words):
 
 def run():
     # train_model()
-    predict_text(["we", "have"], 20)
+    predict_text(["these", "dragons"], 20)

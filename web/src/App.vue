@@ -1,8 +1,13 @@
 <template>
   <v-app>
-    <v-container>
+    <v-app-bar app>
+      <v-spacer></v-spacer>
+      <v-toolbar-title>Dialogue Generator</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-app-bar>
+    <v-main>
       <router-view/>
-    </v-container>
+    </v-main>
   </v-app>
 </template>
 

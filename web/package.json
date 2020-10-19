@@ -12,7 +12,9 @@
     "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuetify": "^2.2.11"
+    "vue-worker": "^1.2.1",
+    "vuetify": "^2.2.11",
+    "worker-plugin": "^5.0.0"
   },
   "devDependencies": {
     "@tensorflow/tfjs": "^2.6.0",
