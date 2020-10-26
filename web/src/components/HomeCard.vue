@@ -1,31 +1,22 @@
 <template>
-  <v-card>
-    <v-img
-        height="400"
-        contain
-        src="@/assets/serials/got.jpg"
-    ></v-img>
-  </v-card>
+  <div class="test">
+    <q-card>
+      <q-img :src="getImage()">
+        <div class="absolute-bottom text-subtitle2 text-center">
+          {{ title }}
+        </div>z
+      </q-img>
+    </q-card>
+  </div>
 </template>
 
 <script>
 export default {
   name: "HomeCard",
-  props: {
-    id: String
-  },
+  props: ["title", "url", "img"],
   methods: {
-    getTitle: function () {
-      switch (this.id) {
-        case 'got':
-          return "Game of Thrones";
-        case 'bbt':
-          return "Big Bang Theory";
-        case 'bb' :
-          return "Breaking Bad";
-        default:
-          return "Untitled"
-      }
+    getImage: function () {
+      return "images/" + this.img
     }
   }
 }

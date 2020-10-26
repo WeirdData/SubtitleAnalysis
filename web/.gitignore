@@ -24,3 +24,5 @@ pnpm-debug.log*
 public/model/
 ids.json
 models/*
+.quasar/*
+public/models/*

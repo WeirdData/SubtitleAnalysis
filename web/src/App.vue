@@ -1,16 +1,17 @@
 <template>
-  <v-app>
-    <v-app-bar app>
-      <v-spacer></v-spacer>
-      <v-toolbar-title>Dialogue Generator</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-app-bar>
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+  <div id="q-app">
+    <router-view/>
+  </div>
 </template>
+<script>
+
+export default {
+  name: 'App'
+}
+</script>
 
 <style>
-
+.test {
+  background-color: red;
+}
 </style>
