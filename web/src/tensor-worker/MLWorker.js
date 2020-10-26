@@ -16,6 +16,7 @@ async function loadModel(name) {
   all_models[name] = await tf.loadLayersModel("/models/" + name + "/model.json");
   all_wordIds[name] = require("assets/raw/" + name + ".json")
   console.log("Models and WorldLists for " + name + " Loaded");
+  return null
 }
 
 self.addEventListener('message', function (me) {
@@ -48,7 +49,7 @@ function swap(json) {
 
 function predictText(input_words, temperature, noOfWords, wordIds, model) {
   if (input_words.length === 0) {
-    return [["N/A"], []]
+    return [["??"], []]
   }
   input_words = input_words.toLowerCase().split(" ")
   let currentWords = []
@@ -63,7 +64,6 @@ function predictText(input_words, temperature, noOfWords, wordIds, model) {
       ignoredWords.push(w)
     }
   }
-
 
   for (const i of Array(noOfWords).keys()) {
     while (currentWords.length < sequence_length) {
@@ -100,7 +100,6 @@ function predictText(input_words, temperature, noOfWords, wordIds, model) {
       if ([".", "?"].indexOf(convertedWords.slice(-1)) !== -1) {
         convertedWords += "/n"
       }
-
     }
   }
   convertedWords += "..."
