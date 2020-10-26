@@ -1,5 +1,3 @@
-
-
 class Units(int):
     @property
     def seconds(self) -> float:
@@ -34,7 +32,9 @@ class Line:
         :param text:
         :return:
         """
-        return text.replace("<i>", "").replace("</i>", "").replace("-", " ")
+        return (text.replace("<i>", "")
+                .replace("</i>", "")
+                .replace("-", " "))
 
     @staticmethod
     def _time_convert(time: str):

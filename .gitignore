@@ -8,3 +8,6 @@ model.png
 loss.png
 ids.json
 log.csv
+web/public/models/*
+web/src/assets/raw/*
+plot.png

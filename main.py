@@ -6,6 +6,6 @@
 # download subtitles if you want.
 
 
-from text_generator import run
+from scripts.text_generator import run
 
 run()

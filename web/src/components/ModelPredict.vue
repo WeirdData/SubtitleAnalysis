@@ -9,7 +9,10 @@
           </v-card-text>
           <v-row justify="center">
             <v-form>
-              <v-text-field label="Seed Words" v-model="inputWords"></v-text-field>
+              <v-text-field
+                  @input="resetText()"
+                  label="Seed Words"
+                  v-model="inputWords"></v-text-field>
             </v-form>
           </v-row>
           <v-card-actions>
@@ -30,11 +33,32 @@
               :indeterminate="showLoading"
           ></v-progress-linear>
           <v-card-title class="align-center">Prediction</v-card-title>
-          <v-card-text>Text Prediction will Appear Below</v-card-text>
-          <v-card-text>
-            {{ predictedWords }}
+          <v-card-text>Text Prediction will Appear Below. Input some words and press 'Predict'</v-card-text>
+          <v-card-text class="justify-center align-center ml-10 mr-10">
+            <p v-for="word in predictedWords" class="black--text ma-0">
+              {{ randomCharacter() }} : {{ word }}
+            </p>
           </v-card-text>
 
+          <v-card-text v-if="ignoredWords.length>0">
+            Words Ignored : {{ ignoredWords }}
+
+            <v-tooltip top class="ml-4">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="grey"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                    icon
+                    x-small
+                >
+                  <v-icon>fas fa-exclamation-circle</v-icon>
+                </v-btn>
+              </template>
+              <span>If you have used any punctuation marks, use space before it. Check out instructions for more details.</span>
+            </v-tooltip>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -49,6 +73,7 @@
                       v-model="noOfWords"
                       min="5"
                       max="100"
+                      @start="resetText()"
                       label="No of Words">
               <template v-slot:append>
                 <v-text-field
@@ -68,6 +93,7 @@
                       min="0.1"
                       step="0.1"
                       max="2"
+                      @start="resetText()"
                       label="Temperature">
               <template v-slot:append>
                 <v-text-field
@@ -80,6 +106,15 @@
                 ></v-text-field>
               </template>
             </v-slider>
+          </v-row>
+          <v-row class="ma-8">
+            <v-select
+                filled
+                :items="serials"
+                v-model="currentSerial"
+                label="Training Text"
+                dense
+            ></v-select>
           </v-row>
         </v-card>
       </v-col>
@@ -98,6 +133,7 @@
 </template>
 
 <script>
+
 import MLWorker from '@/tensor-worker'
 
 export default {
@@ -107,9 +143,11 @@ export default {
       temperature: 0.8,
       noOfWords: 25,
       inputWords: "",
-      predictedWords: "N/A",
+      predictedWords: ["??"],
       ignoredWords: [],
-      showLoading: false
+      showLoading: false,
+      serials: ['Game of Thrones S01'],
+      currentSerial: "Game of Thrones S01",
     }
   },
   mounted() {
@@ -122,13 +160,23 @@ export default {
   methods: {
     predict() {
       this.showLoading = true;
-      this.predictedWords = "...";
+      this.resetText();
       MLWorker.send({
         input_words: this.inputWords.trim(),
         temperature: this.temperature,
-        noOfWords: this.noOfWords
+        noOfWords: this.noOfWords,
+        serial: "bbt"
       });
+    },
+    randomCharacter() {
+      let chars = ["Tyrion", "Cersei", "Daenerys", "Jon", "Soldier", "Knight", "Sansa", "Arya", "Jaime", "Samwell", "Bronn"]
+      return chars[Math.floor(Math.random() * chars.length)];
+    },
+    resetText() {
+      this.predictedWords = [];
+      this.ignoredWords = [];
     }
+
   }
 }
 

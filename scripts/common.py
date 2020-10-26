@@ -10,7 +10,7 @@ from typing import List
 
 import nltk
 
-from models import Subtitle, Line
+from scripts.models import Subtitle, Line
 
 
 def parse_subtitle(filename: str) -> Subtitle:
@@ -32,7 +32,8 @@ def parse_subtitle(filename: str) -> Subtitle:
             full_line = " ".join(line_list)
             # Remove the advertise lines
             if "www.my-subs.com" not in full_line.lower():
-                all_lines.append(Line(line_list))
+                if "www.ydy.com" not in full_line.lower():
+                    all_lines.append(Line(line_list))
 
         for line in f:
             if "-->" in line:

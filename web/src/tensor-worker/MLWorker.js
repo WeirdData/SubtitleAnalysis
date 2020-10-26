@@ -2,25 +2,29 @@ import * as tf from '@tensorflow/tfjs';
 
 tf.setBackend('cpu');
 
-let model;
-let wordIds;
+let all_models = {};
+let all_wordIds = {};
 const sequence_length = 7;
 
-async function loadModel() {
-    model = await tf.loadLayersModel("/model/model.json");
-    return model
+async function loadModel(name) {
+    if (all_models.hasOwnProperty(name)) {
+        console.log("Model for " + name + " is already loaded")
+        return null
+    }
+    all_models[name] = await tf.loadLayersModel("/models/" + name + "/model.json");
+    all_wordIds[name] = require("@/assets/raw/" + name + ".json");
+    console.log("Models and WorldLists for " + name + " Loaded");
 }
-
-loadModel().then(r => {
-    model = r;
-    wordIds = require("@/assets/raw/ids.json");
-    console.log("Model Loaded");
-})
 
 self.addEventListener('message', function (me) {
     let e = me.data.message;
-    let data = predictText(e.input_words, e.temperature, e.noOfWords)
-    postMessage(data);
+    loadModel(e.serial).then(() => {
+        let model = all_models[e.serial];
+        let wordIds = all_wordIds[e.serial];
+        let data = predictText(e.input_words, e.temperature, e.noOfWords, wordIds, model)
+        postMessage(data);
+    })
+
 }, false);
 
 
@@ -33,27 +37,31 @@ function process(number, temperature) {
 function swap(json) {
     const ret = {};
     for (const key in json) {
-        ret[json[key]] = key;
+        if (json.hasOwnProperty(key)) {
+            ret[json[key]] = key;
+        }
     }
     return ret;
 }
 
-function predictText(input_words, temperature, noOfWords) {
+function predictText(input_words, temperature, noOfWords, wordIds, model) {
     if (input_words.length === 0) {
-        return ["N/A", []]
+        return [["N/A"], []]
     }
     input_words = input_words.toLowerCase().split(" ")
     let currentWords = []
     let predictedWords = []
     let ignoredWords = []
     for (let w of input_words) {
-        if (w in wordIds) {
+
+        if (wordIds.hasOwnProperty(w)) {
             currentWords.push(wordIds[w])
             predictedWords.push(wordIds[w])
         } else {
             ignoredWords.push(w)
         }
     }
+
 
     for (const i of Array(noOfWords).keys()) {
         while (currentWords.length < sequence_length) {
@@ -87,8 +95,12 @@ function predictText(input_words, temperature, noOfWords) {
             } else {
                 convertedWords += " " + cw
             }
+            if ([".", "?"].indexOf(convertedWords.slice(-1)) !== -1) {
+                convertedWords += "/n"
+            }
 
         }
     }
-    return [convertedWords, ignoredWords]
+    convertedWords += "..."
+    return [convertedWords.split("/n"), ignoredWords]
 }

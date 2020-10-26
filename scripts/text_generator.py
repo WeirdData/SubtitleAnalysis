@@ -9,12 +9,11 @@ import os
 import numpy as np
 from nltk.tokenize import word_tokenize
 from tensorflow import keras
-
-from common import get_text
+from scripts.common import get_text
 
 REMOVE_WORDS = ["/font", "00FF00", "00FFFF", "00ff00", "00ffff", "01x09",
                 '1x02', '1x04', '1x05', '1x06', '1x07', '1x08', '1x10',
-                "29â\x80\x94", "#"]
+                "29â\x80\x94", "#", "38b0de"]
 
 FILE_ID = "ids.json"
 FILE_LOG = "log.csv"
@@ -26,7 +25,7 @@ BATCH_SIZE = 100
 
 
 def get_data():
-    return get_text("data/got", 1)
+    return get_text("data/bbt", 1)
     # with open(FILE_TXT) as f:
     #     return f.readlines()[0]
 
@@ -114,4 +113,4 @@ def predict_text(words, no_of_words):
 
 def run():
     # train_model()
-    predict_text(["these", "dragons"], 20)
+    predict_text(["physics"], 20)
