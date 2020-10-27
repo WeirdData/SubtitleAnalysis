@@ -18,7 +18,8 @@
             network.
           </q-item>
           <q-item>Game of Thrones model was only trained on subtitles from season 1</q-item>
-          <q-item>Big Bang Theory model was trained on first 150000 words</q-item>
+          <q-item>Big Bang Theory, Criminal Minds, Breaking Bad models were trained on first 250000 characters</q-item>
+          <q-item>Harry Potter series model includes subtitles from all 7 Harry Potter movies</q-item>
           <q-item>I will keep updating these models as I train them more with better parameters</q-item>
           <q-item></q-item>
         </q-list>

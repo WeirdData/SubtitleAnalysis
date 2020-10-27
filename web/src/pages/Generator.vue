@@ -14,7 +14,7 @@
           ref="inputWords"
           outlined
           @keydown.enter.prevent="predict()"
-          v-model="inputWords"
+          v-model="inputView"
           label="Provide starting words here"
           class="column col-xs-12 col-md-8 col-lg-5"
           :rules="[ val => val && val.length > 0 || 'Please provide input seed']"
@@ -65,18 +65,18 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import MLWorker from "../tensor-worker"
 import PredictionCard from "components/PredictionCard";
 import SettingSheet from "components/SettingSheet";
 
-let startPrediction = true;
+let oldWords = null;
 export default {
   name: "PredictionRoom",
   components: {SettingSheet, PredictionCard},
   data() {
     return {
-      inputWords: "",
+      inputView: "",
       predictedWords: ["??"],
       ignoredWords: [],
       showProgress: false
@@ -88,20 +88,33 @@ export default {
       this.ignoredWords = event.data[1];
       this.showProgress = false;
     }
+    this.inputView = this.inputWords
+    if (this.inputView.length > 1) {
+      this.showProgress = true;
+      MLWorker.send({
+        input_words: this.getCurrentInput(),
+        temperature: this.temperature,
+        noOfWords: this.numberOfWords,
+        serial: this.currentSerial
+      });
+    }
   },
   computed: {
-    ...mapGetters('serials', ['currentSerial', 'serialDetails', 'numberOfWords', 'temperature']),
+    ...mapGetters('serials', ['currentSerial', 'serialDetails', 'numberOfWords', 'temperature', 'inputWords']),
     ncw: function () {
-      if (startPrediction) {
-        startPrediction = false;
-      } else {
-        this.predictedWords = ["??"]
-        this.ignoredWords = []
+      if (oldWords === null) {
+        oldWords = this.numberOfWords;
+      }
+      if (this.numberOfWords !== oldWords) {
+        this.predictedWords = ["??"];
+        this.ignoredWords = [];
+        oldWords = this.numberOfWords;
       }
       return this.numberOfWords
     }
   },
   methods: {
+    ...mapActions('serials', ['setInputWords']),
     predict() {
       this.$refs.inputWords.validate()
       if (this.$refs.inputWords.hasError) {
@@ -109,11 +122,15 @@ export default {
       }
       this.showProgress = true;
       MLWorker.send({
-        input_words: this.inputWords.trim(),
+        input_words: this.getCurrentInput(),
         temperature: this.temperature,
         noOfWords: this.numberOfWords,
         serial: this.currentSerial
       });
+    },
+    getCurrentInput() {
+      this.setInputWords(this.inputView.trim())
+      return this.inputView.trim()
     },
     showSettings() {
       this.$q.dialog({

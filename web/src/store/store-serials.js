@@ -9,7 +9,8 @@ const state = {
     hp: {title: "Harry Potter Series", img: "hp.jpg", selected: false},
     cm: {title: "Criminal Minds", img: "cm.jpg", selected: false},
 
-  }
+  },
+  inputWords: ""
 }
 
 const mutations = {
@@ -24,10 +25,13 @@ const mutations = {
     }
   },
   setNoOfWords(state, words) {
-    state.numberOfWords = words
+    state.numberOfWords = words;
   },
   setTemperature(state, temp) {
-    state.temperature = temp
+    state.temperature = temp;
+  },
+  setInputWords(state, words) {
+    state.inputWords = words;
   }
 }
 
@@ -40,6 +44,9 @@ const actions = {
   },
   setTemperature({commit}, temp) {
     commit('setTemperature', temp)
+  },
+  setInputWords({commit}, words) {
+    commit('setInputWords', words)
   }
 }
 
@@ -55,7 +62,11 @@ const getters = {
   },
   temperature: (state) => {
     return state.temperature
+  },
+  inputWords: (state) => {
+    return state.inputWords
   }
+
 
 }
 
