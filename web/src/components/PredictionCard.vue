@@ -8,7 +8,10 @@
         <q-markup-table wrap-cells dense flat class="q-mt-lg">
           <tbody v-for="item in sentences" class="vertical-top">
           <tr>
-            <td class="text-grey-8 text-right" v-if="item!=='??'">{{ randomCharacter(item) }}</td>
+            <td class="text-grey-8 text-right" v-if="item!=='??'">{{
+                randomCharacter(item)
+              }}
+            </td>
             <td>{{ item }}</td>
           </tr>
           </tbody>
@@ -24,8 +27,10 @@
 
 
 const gotChars = ["Tyrion", "Cersei", "Daenerys", "Jon", "Soldier", "Knight", "Sansa", "Arya", "Jaime", "Samwell", "Bronn"];
-const bbtChars = ["Leonard", "Sheldon", "Penny", "Howard", "Raj", "Bernadette", "Amy"]
-
+const bbtChars = ["Leonard", "Sheldon", "Penny", "Howard", "Raj", "Bernadette", "Amy"];
+const bbChars = ["Walter", "Skyler", "Jesse", "Marie", "Walter Jr", "Hank", "Saul", "Gus", "Mike"];
+const hpChars = ["Harry", "Hermione", "Ron", "Draco", "Dobby", "Dumbledore", "Hagrid", "Ginny", "Snape", "Voldemort"];
+const cmChars = ["Reid", "Garcia", "Jennifer", "Rossi", "Hotchner", "Morgan", "Prentiss", "Suspect 1", "Victim", "Suspect 2", "Lab Staff", "Guard", "Judge", "Witness"]
 
 export default {
   name: "PredictionCard",
@@ -41,14 +46,20 @@ export default {
   },
   methods: {
     randomCharacter(item) {
-      if (String(item).includes('hodor')){
+      if (String(item).includes('hodor')) {
         return "Hodor"
       }
       let chars;
       if (this.currentSerial === "got") {
-        chars = gotChars
+        chars = gotChars;
       } else if (this.currentSerial === "bbt") {
-        chars = bbtChars
+        chars = bbtChars;
+      } else if (this.currentSerial === "bb") {
+        chars = bbChars;
+      } else if (this.currentSerial === "hp") {
+        chars = hpChars;
+      } else if (this.currentSerial === "cm") {
+        chars = cmChars;
       } else {
         return "Character " + Math.floor(Math.random() * 10)
       }

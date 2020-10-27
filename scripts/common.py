@@ -73,6 +73,12 @@ def get_text(folder: str, season: int = None) -> str:
     return " ".join(all_text)
 
 
+def get_text_from_folder(folder: str):
+    file_list = get_all_files(folder)
+    subs = [parse_subtitle(x).text for x in file_list]
+    return " ".join(subs)
+
+
 def get_common_words(folder: str, season: int = None) -> List[str]:
     return nltk.tokenize.word_tokenize(get_text(folder, season))
 

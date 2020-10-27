@@ -27,19 +27,19 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://my-subs.co"
 # You should visit their website and check following parts of URL
 
-# GOT : 629, BBT: 2093, BB: 2574
-URL_EXTRA = "versions-2574"
+# GOT : 629, BBT: 2093, BB: 2574, CM: 396
+URL_EXTRA = "versions-396"
 
 # POSTFIX = "game-of-thrones-subtitles"
-POSTFIX = "breaking-bad-subtitles"
+POSTFIX = "criminal-minds-subtitles"
 
-SEASONS = list(range(1, 6))  # Season list for downloading
-EPISODES = list(range(1, 18))  # List of episodes to download, usually give
+SEASONS = list(range(6, 11))  # Season list for downloading
+EPISODES = list(range(1, 26))  # List of episodes to download, usually give
 # highest number of episodes from any season. Unknown episodes will be ignored
 
 # This will be used as a prefix for all downloaded files
-NAME = "Breaking.Bad"
-FOLDER = "data/bb"  # Where you want to put downloaded files
+NAME = "Criminal.Minds"
+FOLDER = "data/cm"  # Where you want to put downloaded files
 
 pathlib.Path(FOLDER).mkdir(parents=True, exist_ok=True)
 
@@ -85,7 +85,7 @@ def start_analysis(season: int, episode: int):
     url = _get_episode_url(season, episode)
     page = requests.get(url)
     if page.status_code == 404:
-        print("No such episode found, skipping")
+        print(f"No such episode found, skipping for url: {url}")
         return
     soup = BeautifulSoup(page.content, 'html.parser')
     all_versions = soup.find_all("div",

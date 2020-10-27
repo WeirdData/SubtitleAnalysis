@@ -5,6 +5,7 @@ const routes = [
     children: [
       {path: '', component: () => import('pages/HomeView')},
       {path: 'generate', component: () => import('pages/Generator')},
+      {path: 'about', component: () => import('pages/About')},
     ]
   },
 

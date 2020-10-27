@@ -1,11 +1,14 @@
 const state = {
   currentSerial: null,
-  numberOfWords: 30,
+  numberOfWords: 40,
   temperature: 0.7,
   serialDetails: {
     got: {title: "Game of Thrones", img: "got.jpg", selected: false},
     bbt: {title: "Big Bang Theory", img: "bbt.jpg", selected: false},
-    // bb: {title: "Breaking Bad", img: "bb.jpg", selected: false},
+    bb: {title: "Breaking Bad", img: "bb.jpg", selected: false},
+    hp: {title: "Harry Potter Series", img: "hp.jpg", selected: false},
+    cm: {title: "Criminal Minds", img: "cm.jpg", selected: false},
+
   }
 }
 

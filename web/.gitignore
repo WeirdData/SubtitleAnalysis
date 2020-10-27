@@ -26,3 +26,5 @@ ids.json
 models/*
 .quasar/*
 public/models/*
+.firebaserc
+.firebase/*

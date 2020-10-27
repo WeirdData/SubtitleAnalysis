@@ -1,5 +1,14 @@
 <template>
   <q-page padding class="justify-center q-pa-xl">
+    <div class="row justify-center text-center">
+      <p>
+        Generate artificial dialogues for various serials based on your input.
+        More details about this project can be found
+        <router-link to="/about">here</router-link>
+        .
+      </p>
+
+    </div>
     <div class="row justify-center text-grey-6 text-center">
       Select the serial and click on proceed.
     </div>
@@ -28,6 +37,12 @@
         label="Proceed"
         to="generate"
       />
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-btn fab icon="keyboard_arrow_right"
+               color="primary" padding="sm" v-if="hideFab"
+               to="generate"
+        />
+      </q-page-sticky>
     </div>
   </q-page>
 </template>
@@ -56,6 +71,12 @@ export default {
           return this.serialDetails[c].title;
         }
       }
+    },
+    hideFab() {
+      if (this.disableBtn) {
+        return false
+      }
+      return this.$q.screen.lt.md;
     }
   },
   methods: {
